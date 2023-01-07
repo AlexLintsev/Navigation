@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Navigation
-//
-//  Created by Александр Линцев on 03.01.2023.
-//
-
 import UIKit
 
 @main
