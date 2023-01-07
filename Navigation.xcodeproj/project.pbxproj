@@ -16,7 +16,8 @@
 		6A05C52329643ECB0064423C /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C52229643ECB0064423C /* PostViewController.swift */; };
 		6A05C52529643FC90064423C /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C52429643FC90064423C /* Post.swift */; };
 		6A48F82C296470B200A12487 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48F82B296470B200A12487 /* InfoViewController.swift */; };
-		6AEEE5B929656FA200012933 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEE5B829656FA200012933 /* InfoView.swift */; };
+		6ABCADF92969B92300D6BEAC /* TextFieldWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */; };
+		6AF4746E296711E500843E8A /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF4746D296711E500843E8A /* ProfileHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +32,8 @@
 		6A05C52229643ECB0064423C /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		6A05C52429643FC90064423C /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		6A48F82B296470B200A12487 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
-		6AEEE5B829656FA200012933 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
+		6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithPadding.swift; sourceTree = "<group>"; };
+		6AF4746D296711E500843E8A /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,19 +66,28 @@
 		6A05C50B296402640064423C /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				6AF4746C296711A700843E8A /* Profile */,
 				6A05C50C296402640064423C /* AppDelegate.swift */,
 				6A05C50E296402640064423C /* SceneDelegate.swift */,
 				6A05C510296402640064423C /* FeedViewController.swift */,
-				6A05C520296419E20064423C /* ProfileViewController.swift */,
 				6A05C52229643ECB0064423C /* PostViewController.swift */,
 				6A48F82B296470B200A12487 /* InfoViewController.swift */,
-				6AEEE5B829656FA200012933 /* InfoView.swift */,
 				6A05C52429643FC90064423C /* Post.swift */,
 				6A05C515296402650064423C /* Assets.xcassets */,
 				6A05C517296402650064423C /* LaunchScreen.storyboard */,
 				6A05C51A296402650064423C /* Info.plist */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		6AF4746C296711A700843E8A /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				6AF4746D296711E500843E8A /* ProfileHeaderView.swift */,
+				6A05C520296419E20064423C /* ProfileViewController.swift */,
+				6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,13 +160,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6AEEE5B929656FA200012933 /* InfoView.swift in Sources */,
 				6A05C511296402640064423C /* FeedViewController.swift in Sources */,
 				6A05C52529643FC90064423C /* Post.swift in Sources */,
 				6A05C50D296402640064423C /* AppDelegate.swift in Sources */,
+				6AF4746E296711E500843E8A /* ProfileHeaderView.swift in Sources */,
 				6A48F82C296470B200A12487 /* InfoViewController.swift in Sources */,
 				6A05C521296419E20064423C /* ProfileViewController.swift in Sources */,
 				6A05C50F296402640064423C /* SceneDelegate.swift in Sources */,
+				6ABCADF92969B92300D6BEAC /* TextFieldWithPadding.swift in Sources */,
 				6A05C52329643ECB0064423C /* PostViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

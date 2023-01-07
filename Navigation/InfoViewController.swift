@@ -13,23 +13,14 @@ class InfoViewController: UIViewController {
         super.viewDidLoad()
 
         navigationItem.title = "Info"
-        view.backgroundColor = .systemYellow
+        view.backgroundColor = .systemRed
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let infoView = InfoView(frame: CGRect(
-            x: 0,
-            y: 0,
-            width: view.center.x * 2,
-            height: 150
-        ))
-        
-        infoView.center = CGPoint(x: view.center.x, y: view.center.y / 2)
-        view.addSubview(infoView)
         view.addSubview(actionButton)
-        actionButton.center = infoView.center
+        actionButton.center = view.center
         actionButton.addTarget(
             self,
             action: #selector(buttonPressed(_:)),
