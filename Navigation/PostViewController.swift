@@ -21,7 +21,7 @@ class PostViewController: UIViewController {
         let infoNavigationController = UINavigationController(rootViewController: InfoViewController())
 
         infoNavigationController.modalTransitionStyle = .crossDissolve
-        infoNavigationController.modalPresentationStyle = .fullScreen
+        infoNavigationController.modalPresentationStyle = .formSheet
 
         present(infoNavigationController, animated: true)
     }

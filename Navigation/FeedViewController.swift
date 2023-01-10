@@ -14,7 +14,7 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Feed"
-        view.backgroundColor = .systemGray
+        view.backgroundColor = .systemGreen
 
         let tabBarItem = UITabBarItem()
         tabBarItem.image = UIImage(named: "feed")
