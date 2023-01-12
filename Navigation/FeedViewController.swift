@@ -37,6 +37,8 @@ class FeedViewController: UIViewController {
         view.backgroundColor = .systemGreen
         let tabBarItem = UITabBarItem()
         tabBarItem.image = UIImage(named: "feed")
+        tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
+        tabBarItem.title = "Feed"
         self.tabBarItem = tabBarItem
         view.addSubview(stackView)
         setupConstraints()

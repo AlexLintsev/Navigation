@@ -27,6 +27,8 @@ class ProfileViewController: UIViewController {
 
         let tabBarItem = UITabBarItem()
         tabBarItem.image = UIImage(named: "profile")
+        tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
+        tabBarItem.title = "Profile"
 
         self.tabBarItem = tabBarItem
 
