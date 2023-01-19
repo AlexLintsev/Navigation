@@ -10,13 +10,47 @@ class LogInViewController: UIViewController {
         return view
     }()
 
-    private lazy var tableView: UITableView  = {
-        let tableView = UITableView.init(
-            frame: .zero,
-            style: .plain
-        )
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+    private lazy var loginView: UIStackView = {
+        let view = UIStackView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.borderWidth = 0.5
+        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.layer.cornerRadius = 10
+        view.backgroundColor = .systemGray6
+        return view
+    }()
+
+    private lazy var emailTextField: TextFieldWithPadding = {
+        let textField = TextFieldWithPadding()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont(name: "systemFont", size: 16)
+        textField.textColor = .black
+        textField.placeholder = "Email or phone"
+        textField.keyboardType = UIKeyboardType.default
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
+        textField.autocapitalizationType = .none
+        return textField
+    }()
+
+    private lazy var passwordTextField: TextFieldWithPadding = {
+        let textField = TextFieldWithPadding()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont(name: "systemFont", size: 16)
+        textField.textColor = .black
+        textField.placeholder = "Password"
+        textField.keyboardType = UIKeyboardType.default
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
+        textField.isSecureTextEntry = true
+        return textField
+    }()
+
+    private lazy var separatorView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .lightGray
+        return view
     }()
 
     private lazy var loginButton: UIButton = {
@@ -34,18 +68,12 @@ class LogInViewController: UIViewController {
         return button
     }()
 
-    private enum CellReuseID: String {
-        case email = "EmailTableViewCell_ReuseID"
-        case password = "PasswordTableViewCell_ReuseID"
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupView()
         addSubViews()
         setupConstraintsKeyboardHide()
-        tuneTableView()
         setupActions()
     }
 
@@ -66,29 +94,11 @@ class LogInViewController: UIViewController {
 
     private func addSubViews() {
         view.addSubview(logoImageView)
-        view.addSubview(tableView)
+        view.addSubview(loginView)
+        loginView.addSubview(emailTextField)
+        loginView.addSubview(passwordTextField)
+        loginView.addSubview(separatorView)
         view.addSubview(loginButton)
-    }
-
-    private func tuneTableView() {
-        tableView.backgroundColor = .systemGray6
-        tableView.layer.borderColor = UIColor.lightGray.cgColor
-        tableView.layer.borderWidth = 0.5
-        tableView.layer.cornerRadius = 10
-        tableView.rowHeight = 50
-        tableView.alwaysBounceVertical = false
-
-        tableView.register(
-            EmailTableViewCell.self,
-            forCellReuseIdentifier: CellReuseID.email.rawValue
-        )
-        tableView.register(
-            PasswordTableViewCell.self,
-            forCellReuseIdentifier: CellReuseID.password.rawValue
-        )
-
-        tableView.dataSource = self
-        tableView.delegate = self
     }
 
     private func setupActions() {
@@ -103,7 +113,7 @@ class LogInViewController: UIViewController {
         NSLayoutConstraint.deactivate(constraintsArray)
 
         constraintsArray = getBaseConstraints() + [
-            tableView.topAnchor.constraint(
+            loginView.topAnchor.constraint(
                 equalTo: logoImageView.bottomAnchor,
                 constant: 120
             )
@@ -116,7 +126,7 @@ class LogInViewController: UIViewController {
         NSLayoutConstraint.deactivate(constraintsArray)
 
         constraintsArray = getBaseConstraints() + [
-            tableView.bottomAnchor.constraint(
+            loginView.bottomAnchor.constraint(
                 equalTo: view.bottomAnchor,
                 constant: -keyboardHeight
             )
@@ -137,18 +147,33 @@ class LogInViewController: UIViewController {
                 constant: 120
             ),
 
-            tableView.heightAnchor.constraint(equalToConstant: 100),
-            tableView.leftAnchor.constraint(
+            loginView.heightAnchor.constraint(equalToConstant: 100),
+            loginView.leftAnchor.constraint(
                 equalTo: safeAreaGuide.leftAnchor,
                 constant: 16
             ),
-            tableView.rightAnchor.constraint(
+            loginView.rightAnchor.constraint(
                 equalTo: safeAreaGuide.rightAnchor,
                 constant: -16
             ),
 
+            emailTextField.topAnchor.constraint(equalTo: loginView.topAnchor),
+            emailTextField.leftAnchor.constraint(equalTo: loginView.leftAnchor),
+            emailTextField.rightAnchor.constraint(equalTo: loginView.rightAnchor),
+            emailTextField.heightAnchor.constraint(equalToConstant: 50),
+
+            passwordTextField.bottomAnchor.constraint(equalTo: loginView.bottomAnchor),
+            passwordTextField.leftAnchor.constraint(equalTo: loginView.leftAnchor),
+            passwordTextField.rightAnchor.constraint(equalTo: loginView.rightAnchor),
+            passwordTextField.heightAnchor.constraint(equalToConstant: 50),
+
+            separatorView.centerYAnchor.constraint(equalTo: loginView.centerYAnchor),
+            separatorView.leftAnchor.constraint(equalTo: loginView.leftAnchor),
+            separatorView.rightAnchor.constraint(equalTo: loginView.rightAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5),
+
             loginButton.topAnchor.constraint(
-                equalTo: tableView.bottomAnchor,
+                equalTo: loginView.bottomAnchor,
                 constant: 16
             ),
             loginButton.leftAnchor.constraint(
@@ -185,7 +210,7 @@ class LogInViewController: UIViewController {
     @objc private func willShowKeyboard(_ notification: NSNotification) {
         let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height ?? 0.0
 
-        let tableViewMaxY = view.superview!.convert(tableView.frame, to: nil).maxY
+        let tableViewMaxY = view.superview!.convert(loginView.frame, to: nil).maxY
 
         if view.bounds.maxY - keyboardHeight < tableViewMaxY {
             setupConstraintsKeyboardShow(keyboardHeight: keyboardHeight)
@@ -204,12 +229,7 @@ class LogInViewController: UIViewController {
     @objc private func buttonPressed(_ sender: UIButton) {
         let viewController = ProfileViewController()
 
-        let profileNavigationController = UINavigationController(rootViewController: viewController)
-
-        profileNavigationController.modalTransitionStyle = .coverVertical
-        profileNavigationController.modalPresentationStyle = .fullScreen
-
-        present(profileNavigationController, animated: true)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -219,40 +239,4 @@ extension UIImage {
             draw(in: CGRect(origin: .zero, size: size), blendMode: .normal, alpha: a)
         }
     }
-}
-
-extension LogInViewController: UITableViewDataSource {
-    func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
-        2
-    }
-
-    func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath
-    ) -> UITableViewCell {
-
-        guard let cell: UITableViewCell = {
-            if indexPath.row == 0 {
-                return tableView.dequeueReusableCell(
-                    withIdentifier: CellReuseID.email.rawValue,
-                    for: indexPath
-                ) as? EmailTableViewCell
-            } else {
-                return tableView.dequeueReusableCell(
-                    withIdentifier: CellReuseID.password.rawValue,
-                    for: indexPath
-                ) as? PasswordTableViewCell
-            }
-        }() else {
-            fatalError("Could not dequeueReusableCell")
-        }
-        return cell
-    }
-}
-
-extension LogInViewController: UITableViewDelegate {
-
 }

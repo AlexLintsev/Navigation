@@ -15,10 +15,7 @@
 		6A05C521296419E20064423C /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C520296419E20064423C /* ProfileViewController.swift */; };
 		6A05C52329643ECB0064423C /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C52229643ECB0064423C /* PostViewController.swift */; };
 		6A05C52529643FC90064423C /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C52429643FC90064423C /* Post.swift */; };
-		6A151BAC29728845001E4A20 /* PasswordTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A151BAB29728845001E4A20 /* PasswordTableViewCell.swift */; };
-		6A151BAE2972896E001E4A20 /* SettingsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A151BAD2972896E001E4A20 /* SettingsHelper.swift */; };
 		6A450F3F2970641B007090AE /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A450F3E2970641B007090AE /* LogInViewController.swift */; };
-		6A450F41297086A8007090AE /* EmailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A450F40297086A8007090AE /* EmailTableViewCell.swift */; };
 		6A48F82C296470B200A12487 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48F82B296470B200A12487 /* InfoViewController.swift */; };
 		6ABCADF92969B92300D6BEAC /* TextFieldWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */; };
 		6AF4746E296711E500843E8A /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF4746D296711E500843E8A /* ProfileHeaderView.swift */; };
@@ -35,10 +32,7 @@
 		6A05C520296419E20064423C /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6A05C52229643ECB0064423C /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		6A05C52429643FC90064423C /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		6A151BAB29728845001E4A20 /* PasswordTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordTableViewCell.swift; sourceTree = "<group>"; };
-		6A151BAD2972896E001E4A20 /* SettingsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHelper.swift; sourceTree = "<group>"; };
 		6A450F3E2970641B007090AE /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
-		6A450F40297086A8007090AE /* EmailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTableViewCell.swift; sourceTree = "<group>"; };
 		6A48F82B296470B200A12487 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithPadding.swift; sourceTree = "<group>"; };
 		6AF4746D296711E500843E8A /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
@@ -95,9 +89,6 @@
 				6A05C520296419E20064423C /* ProfileViewController.swift */,
 				6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */,
 				6A450F3E2970641B007090AE /* LogInViewController.swift */,
-				6A450F40297086A8007090AE /* EmailTableViewCell.swift */,
-				6A151BAB29728845001E4A20 /* PasswordTableViewCell.swift */,
-				6A151BAD2972896E001E4A20 /* SettingsHelper.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -172,13 +163,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A151BAC29728845001E4A20 /* PasswordTableViewCell.swift in Sources */,
 				6A05C511296402640064423C /* FeedViewController.swift in Sources */,
 				6A05C52529643FC90064423C /* Post.swift in Sources */,
 				6A05C50D296402640064423C /* AppDelegate.swift in Sources */,
 				6AF4746E296711E500843E8A /* ProfileHeaderView.swift in Sources */,
-				6A450F41297086A8007090AE /* EmailTableViewCell.swift in Sources */,
-				6A151BAE2972896E001E4A20 /* SettingsHelper.swift in Sources */,
 				6A48F82C296470B200A12487 /* InfoViewController.swift in Sources */,
 				6A05C521296419E20064423C /* ProfileViewController.swift in Sources */,
 				6A05C50F296402640064423C /* SceneDelegate.swift in Sources */,
