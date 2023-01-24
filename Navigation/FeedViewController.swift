@@ -2,7 +2,7 @@ import UIKit
 
 class FeedViewController: UIViewController {
 
-    private let post = Post(title: "Title from feedController")
+    private let post = "Title from feedController"
 
     private lazy var button1: UIButton = { [unowned self] in
         let button = UIButton()
@@ -61,7 +61,7 @@ class FeedViewController: UIViewController {
 
     @objc private func buttonPressed(_ sender: UIButton) {
         let viewController = PostViewController()
-        viewController.postTitle = post.title
+        viewController.postTitle = post
 
         let postNavigationController = UINavigationController(rootViewController: viewController)
 

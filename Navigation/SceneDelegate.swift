@@ -12,12 +12,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let tabBarViewController = UITabBarController()
         let feedViewController = FeedViewController()
-        let logInViewController = LogInViewController()
+        let profileViewController = ProfileViewController()
 
         let feedNavigationController = UINavigationController(rootViewController: feedViewController)
-        let logInNavigationController = UINavigationController(rootViewController: logInViewController)
+        let profileNavigationController = UINavigationController(rootViewController: profileViewController)
 
-        tabBarViewController.setViewControllers([feedNavigationController, logInNavigationController], animated: true)
+        tabBarViewController.setViewControllers([feedNavigationController, profileNavigationController], animated: true)
 
         window.rootViewController = tabBarViewController
         window.makeKeyAndVisible()
