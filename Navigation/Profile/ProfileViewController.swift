@@ -2,55 +2,92 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    private lazy var profileHeaderView: ProfileHeaderView = { [unowned self] in
-        let view = ProfileHeaderView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.isUserInteractionEnabled = true
-        return view
+    private let postData = Post.make()
+
+    private let headerView = ProfileHeaderView()
+
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView.init(
+            frame: .zero,
+            style: .plain
+        )
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
 
-    private lazy var someButton: UIButton = { [unowned self] in
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = false
-        button.setTitle("Нерабочая кнопка", for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .systemOrange
-        return button
-    }()
+    private enum CellReuseID: String {
+        case post = "PostTableViewCell_ReuseID"
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = "Profile"
-        view.backgroundColor = .lightGray
-
-        let tabBarItem = UITabBarItem()
-        tabBarItem.image = UIImage(named: "profile")
-        tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
-        tabBarItem.title = "Profile"
-
-        self.tabBarItem = tabBarItem
-
-        view.addSubview(profileHeaderView)
-        view.addSubview(someButton)
-
-        setupConstaints()
+        setupView()
+        addSubViews()
+        setupConstraints()
+        tuneTableView()
     }
 
-    private func setupConstaints() {
+    private func setupView() {
+        view.backgroundColor = .systemBackground
+    }
+
+    private func addSubViews() {
+        view.addSubview(tableView)
+    }
+
+    private func setupConstraints() {
         let safeAreaGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            profileHeaderView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),
-            profileHeaderView.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor),
-            profileHeaderView.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor),
-            profileHeaderView.heightAnchor.constraint(equalToConstant: 220),
-
-            someButton.leftAnchor.constraint(equalTo: safeAreaGuide.leftAnchor),
-            someButton.rightAnchor.constraint(equalTo: safeAreaGuide.rightAnchor),
-            someButton.heightAnchor.constraint(equalToConstant: 50),
-            someButton.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor)
+            tableView.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor),
         ])
     }
+
+    private func tuneTableView() {
+        tableView.estimatedRowHeight = 1500
+        tableView.setAndLayout(headerView: headerView)
+        tableView.tableFooterView = UIView()
+
+        tableView.register(
+            PostTableViewCell.self,
+            forCellReuseIdentifier: CellReuseID.post.rawValue
+        )
+
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+}
+
+extension ProfileViewController: UITableViewDataSource {
+    func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
+        postData.count
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CellReuseID.post.rawValue,
+            for: indexPath
+        ) as? PostTableViewCell else {
+            fatalError("Could not dequeueReusableCell")
+        }
+
+        cell.update(postData[indexPath.row])
+
+        return cell
+    }
+}
+
+extension ProfileViewController: UITableViewDelegate {
+
 }
