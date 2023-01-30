@@ -69,7 +69,6 @@ class PostTableViewCell: UITableViewCell {
     }
 
     private func setupConstraints() {
-        let safeAreaGuide = safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
             authorFieldLabel.topAnchor.constraint(equalTo: contentView.topAnchor),

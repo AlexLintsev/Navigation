@@ -17,6 +17,7 @@ class ProfileViewController: UIViewController {
 
     private enum CellReuseID: String {
         case post = "PostTableViewCell_ReuseID"
+        case photos = "PhotosTableViewCell_ReuseID"
     }
 
     override func viewDidLoad() {
@@ -30,6 +31,12 @@ class ProfileViewController: UIViewController {
 
     private func setupView() {
         view.backgroundColor = .systemBackground
+
+        let tabBarItem = UITabBarItem()
+        tabBarItem.image = UIImage(named: "profile")
+        tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
+        tabBarItem.title = "Profile"
+        self.tabBarItem = tabBarItem
     }
 
     private func addSubViews() {
@@ -53,6 +60,11 @@ class ProfileViewController: UIViewController {
         tableView.tableFooterView = UIView()
 
         tableView.register(
+            PhotosTableViewCell.self,
+            forCellReuseIdentifier: CellReuseID.photos.rawValue
+        )
+
+        tableView.register(
             PostTableViewCell.self,
             forCellReuseIdentifier: CellReuseID.post.rawValue
         )
@@ -63,11 +75,15 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        2
+    }
+
     func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        postData.count
+        section == 0 ? 1 : postData.count
     }
 
     func tableView(
@@ -75,16 +91,36 @@ extension ProfileViewController: UITableViewDataSource {
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
 
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: CellReuseID.post.rawValue,
-            for: indexPath
-        ) as? PostTableViewCell else {
-            fatalError("Could not dequeueReusableCell")
+        switch indexPath.section {
+        case 0:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CellReuseID.photos.rawValue,
+                for: indexPath
+            ) as? PhotosTableViewCell else {
+                fatalError("Could not dequeueReusableCell")
+            }
+
+            return cell
+
+        default:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CellReuseID.post.rawValue,
+                for: indexPath
+            ) as? PostTableViewCell else {
+                fatalError("Could not dequeueReusableCell")
+            }
+
+            cell.update(postData[indexPath.row])
+
+            return cell
         }
+    }
 
-        cell.update(postData[indexPath.row])
-
-        return cell
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        navigationController?.pushViewController(PhotosViewController(), animated: true)
     }
 }
 

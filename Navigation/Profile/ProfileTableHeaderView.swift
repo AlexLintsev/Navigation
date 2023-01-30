@@ -4,8 +4,9 @@ class ProfileHeaderView: UIView {
 
     private var statusText: String = "Waiting for something..."
 
-    private lazy var avatarImageView: UIImageView = { [unowned self] in
-        let view = UIImageView(image: UIImage(named: "cat")!)
+    private lazy var avatarImageView: UIImageView = {
+        let originalImage = UIImage(named: "cat")!
+        let view = UIImageView(image: UIImage.cropToSquare(originalImage))
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = false
         view.layer.cornerRadius = 50
@@ -66,7 +67,7 @@ class ProfileHeaderView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemGray
+        backgroundColor = .systemGray6
         addSubview(avatarImageView)
         addSubview(fullNameLabel)
         addSubview(setStatusButton)
