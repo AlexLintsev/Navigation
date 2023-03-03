@@ -21,7 +21,6 @@
 		6A79FF1629B1E04600DB0479 /* StorageService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A79FF1029B1E04600DB0479 /* StorageService.framework */; };
 		6A79FF1729B1E04600DB0479 /* StorageService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A79FF1029B1E04600DB0479 /* StorageService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A79FF1C29B1E06400DB0479 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C52429643FC90064423C /* Post.swift */; };
-		6A79FF1D29B1E99F00DB0479 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A05C520296419E20064423C /* ProfileViewController.swift */; };
 		6A914D1A2984FED800302CFF /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A914D192984FED800302CFF /* PhotosViewController.swift */; };
 		6A914D1C2985152A00302CFF /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A914D1B2985152A00302CFF /* ProfileCell.swift */; };
 		6ABCADF92969B92300D6BEAC /* TextFieldWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCADF82969B92300D6BEAC /* TextFieldWithPadding.swift */; };
@@ -289,7 +288,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A79FF1D29B1E99F00DB0479 /* ProfileViewController.swift in Sources */,
 				6A79FF1C29B1E06400DB0479 /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
