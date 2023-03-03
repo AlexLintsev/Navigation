@@ -4,19 +4,59 @@ class ProfileHeaderView: UIView {
 
     private var statusText: String = "Waiting for something..."
 
+    private var safeAreaViewControllerGuide: UILayoutGuide!
+
+    private var avatarImageViewCenter: CGPoint!
+
     private lazy var avatarImageView: UIImageView = {
         let originalImage = UIImage(named: "cat")!
         let view = UIImageView(image: UIImage.cropToSquare(originalImage))
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.isUserInteractionEnabled = false
+        view.isUserInteractionEnabled = true
         view.layer.cornerRadius = 50
         view.layer.masksToBounds = true
         view.layer.borderWidth = 3
         view.layer.borderColor = UIColor.white.cgColor
+        let tapAvatar = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTapAvatar)
+        )
+        view.addGestureRecognizer(tapAvatar)
         return view
     }()
 
-    private lazy var fullNameLabel: UILabel = { [unowned self] in
+    private lazy var viewUnderAvatar: UIView = {
+        let view = UIView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: 10000,
+            height: 10000
+        ))
+        view.isHidden = true
+        return view
+    }()
+
+    private lazy var closeButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(
+            UIImage(named: "closeButton"),
+            for: .normal
+        )
+        button.isHidden = true
+        button.isUserInteractionEnabled = true
+        return button
+    }()
+
+    private lazy var viewForCloseButton: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemGray6
+        view.isHidden = true
+        return view
+    }()
+
+    private lazy var fullNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isUserInteractionEnabled = false
@@ -26,7 +66,7 @@ class ProfileHeaderView: UIView {
         return label
     }()
 
-    private lazy var setStatusButton: UIButton = { [unowned self] in
+    private lazy var setStatusButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isUserInteractionEnabled = true
@@ -41,7 +81,7 @@ class ProfileHeaderView: UIView {
         return button
     }()
 
-    private lazy var statusLabel: UILabel = { [unowned self] in
+    private lazy var statusLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isUserInteractionEnabled = false
@@ -51,7 +91,7 @@ class ProfileHeaderView: UIView {
         return label
     }()
 
-    private lazy var statusTextField: TextFieldWithPadding = { [unowned self] in
+    private lazy var statusTextField: TextFieldWithPadding = {
         let field = TextFieldWithPadding()
         field.translatesAutoresizingMaskIntoConstraints = false
         field.isUserInteractionEnabled = true
@@ -68,11 +108,14 @@ class ProfileHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemGray6
-        addSubview(avatarImageView)
         addSubview(fullNameLabel)
         addSubview(setStatusButton)
         addSubview(statusLabel)
         addSubview(statusTextField)
+        addSubview(viewUnderAvatar)
+        addSubview(avatarImageView)
+        addSubview(closeButton)
+        addSubview(viewForCloseButton)
         setupConstraints()
         setupActions()
     }
@@ -81,7 +124,7 @@ class ProfileHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc func buttonPressed(_ sender: UIButton) {
+    @objc func statusButtonPressed(_ sender: UIButton) {
         statusLabel.text = statusText
         statusTextField.text = nil
         print("Status updated: \(statusText)")
@@ -91,10 +134,111 @@ class ProfileHeaderView: UIView {
         statusText = statusTextField.text ?? ""
     }
 
+    @objc func closeButtonPressed(_ sender: UIButton) {
+        launchReverseAnimationAvatar()
+    }
+
+    @objc func didTapAvatar() {
+        launchAnimationAvatar()
+    }
+
+    private func launchAnimationAvatar() {
+        safeAreaViewControllerGuide = avatarImageView.findViewController()!.view.safeAreaLayoutGuide
+
+        avatarImageViewCenter = avatarImageView.center
+
+        let avatarWidth = avatarImageView.frame.width
+        let screenWidth = safeAreaViewControllerGuide.layoutFrame.width
+        let screenHeight = safeAreaViewControllerGuide.layoutFrame.height
+
+        viewUnderAvatar.backgroundColor = .white.withAlphaComponent(0)
+        viewUnderAvatar.isHidden = false
+        viewForCloseButton.isHidden = false
+        closeButton.isHidden = false
+
+        UIView.animateKeyframes(
+            withDuration: 0.8,
+            delay: 0.5,
+            animations: {
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0.0,
+                    relativeDuration: 0.5 / 0.8) {
+                        self.avatarImageView.center = CGPoint(
+                            x: screenWidth / 2,
+                            y: screenHeight / 2
+                        )
+
+                        self.avatarImageView.transform = CGAffineTransform(
+                            scaleX: screenWidth / avatarWidth,
+                            y: screenWidth / avatarWidth
+                        )
+
+                        self.avatarImageView.layer.cornerRadius = 0
+                        self.avatarImageView.layer.borderWidth = 0
+                        self.viewUnderAvatar.backgroundColor = .white.withAlphaComponent(0.7)
+                    }
+
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0.5,
+                    relativeDuration: 0.3 / 0.8) {
+                        self.viewForCloseButton.backgroundColor = .systemGray6.withAlphaComponent(0)
+                    }
+            },
+            completion: { finished in
+                self.viewForCloseButton.isHidden = true
+            }
+        )
+    }
+
+    private func launchReverseAnimationAvatar() {
+        safeAreaViewControllerGuide = avatarImageView.findViewController()!.view.safeAreaLayoutGuide
+
+        let avatarWidth = avatarImageView.frame.width
+        let screenWidth = safeAreaViewControllerGuide.layoutFrame.width
+        let screenHeight = safeAreaViewControllerGuide.layoutFrame.height
+
+        viewForCloseButton.isHidden = false
+
+        UIView.animateKeyframes(
+            withDuration: 0.8,
+            delay: 0.5,
+            animations: {
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0,
+                    relativeDuration: 0.3 / 0.8) {
+                        self.viewForCloseButton.backgroundColor = .systemGray6.withAlphaComponent(1.0)
+                    }
+
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0.3,
+                    relativeDuration: 0.5 / 0.8) {
+                        self.avatarImageView.center = CGPoint(
+                            x: self.avatarImageViewCenter.x,
+                            y: self.avatarImageViewCenter.y
+                        )
+
+                        self.avatarImageView.transform = CGAffineTransform(
+                            scaleX: screenWidth / avatarWidth,
+                            y: screenWidth / avatarWidth
+                        )
+
+                        self.avatarImageView.layer.cornerRadius = self.avatarImageView.frame.height / 2
+                        self.avatarImageView.layer.borderWidth = 3
+                        self.viewUnderAvatar.backgroundColor = .white.withAlphaComponent(0)
+                    }
+            },
+            completion: { finished in
+                self.closeButton.isHidden = true
+                self.viewForCloseButton.isHidden = true
+                self.viewUnderAvatar.isHidden = true
+            }
+        )
+    }
+
     private func setupActions() {
         setStatusButton.addTarget(
             self,
-            action: #selector(buttonPressed(_:)),
+            action: #selector(statusButtonPressed(_:)),
             for: .touchUpInside
         )
 
@@ -102,6 +246,12 @@ class ProfileHeaderView: UIView {
             self,
             action: #selector(statusTextChanged(_:)),
             for: .editingChanged
+        )
+
+        closeButton.addTarget(
+            self,
+            action: #selector(closeButtonPressed(_:)),
+            for: .touchUpInside
         )
     }
 
@@ -172,7 +322,35 @@ class ProfileHeaderView: UIView {
                 equalTo: statusLabel.bottomAnchor,
                 constant: 10
             ),
-            statusTextField.heightAnchor.constraint(equalToConstant: 40)
+            statusTextField.heightAnchor.constraint(equalToConstant: 40),
+
+            closeButton.centerXAnchor.constraint(
+                equalTo: safeAreaGuide.rightAnchor,
+                constant: -50
+            ),
+            closeButton.centerYAnchor.constraint(
+                equalTo: safeAreaGuide.topAnchor,
+                constant: 50
+            ),
+            closeButton.heightAnchor.constraint(equalToConstant: 30),
+            closeButton.widthAnchor.constraint(equalToConstant: 30),
+
+            viewForCloseButton.leftAnchor.constraint(equalTo: closeButton.leftAnchor),
+            viewForCloseButton.rightAnchor.constraint(equalTo: closeButton.rightAnchor),
+            viewForCloseButton.topAnchor.constraint(equalTo: closeButton.topAnchor),
+            viewForCloseButton.bottomAnchor.constraint(equalTo: closeButton.bottomAnchor)
         ])
+    }
+}
+
+extension UIView {
+    func findViewController() -> UIViewController? {
+        if let nextResponder = self.next as? UIViewController {
+            return nextResponder
+        } else if let nextResponder = self.next as? UIView {
+            return nextResponder.findViewController()
+        } else {
+            return nil
+        }
     }
 }
