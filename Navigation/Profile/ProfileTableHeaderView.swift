@@ -8,9 +8,8 @@ class ProfileHeaderView: UIView {
 
     private var avatarImageViewCenter: CGPoint!
 
-    private lazy var avatarImageView: UIImageView = {
-        let originalImage = UIImage(named: "cat")!
-        let view = UIImageView(image: UIImage.cropToSquare(originalImage))
+    lazy var avatarImageView: UIImageView = {
+        let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
         view.layer.cornerRadius = 50
@@ -56,11 +55,10 @@ class ProfileHeaderView: UIView {
         return view
     }()
 
-    private lazy var fullNameLabel: UILabel = {
+    lazy var fullNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isUserInteractionEnabled = false
-        label.text = "Hipster Cat"
         label.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
         label.textColor = .black
         return label
@@ -81,7 +79,7 @@ class ProfileHeaderView: UIView {
         return button
     }()
 
-    private lazy var statusLabel: UILabel = {
+    lazy var statusLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isUserInteractionEnabled = false
@@ -195,7 +193,6 @@ class ProfileHeaderView: UIView {
 
         let avatarWidth = avatarImageView.frame.width
         let screenWidth = safeAreaViewControllerGuide.layoutFrame.width
-        let screenHeight = safeAreaViewControllerGuide.layoutFrame.height
 
         viewForCloseButton.isHidden = false
 
