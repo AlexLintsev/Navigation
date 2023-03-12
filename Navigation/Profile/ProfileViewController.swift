@@ -1,4 +1,5 @@
 import UIKit
+import StorageService
 
 class ProfileViewController: UIViewController {
 
@@ -37,6 +38,12 @@ class ProfileViewController: UIViewController {
         tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
         tabBarItem.title = "Profile"
         self.tabBarItem = tabBarItem
+
+        #if DEBUG
+        view.backgroundColor = .red
+        #else
+        view.backgroundColor = .green
+        #endif
     }
 
     private func addSubViews() {
