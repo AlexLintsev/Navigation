@@ -1,4 +1,5 @@
 import UIKit
+import SnapKit
 
 class ProfileHeaderView: UIView {
 
@@ -195,7 +196,6 @@ class ProfileHeaderView: UIView {
 
         let avatarWidth = avatarImageView.frame.width
         let screenWidth = safeAreaViewControllerGuide.layoutFrame.width
-        let screenHeight = safeAreaViewControllerGuide.layoutFrame.height
 
         viewForCloseButton.isHidden = false
 
@@ -258,88 +258,49 @@ class ProfileHeaderView: UIView {
     private func setupConstraints() {
         let safeAreaGuide = safeAreaLayoutGuide
 
-        NSLayoutConstraint.activate([
-            avatarImageView.heightAnchor.constraint(equalToConstant: 100),
-            avatarImageView.widthAnchor.constraint(equalToConstant: 100),
-            avatarImageView.topAnchor.constraint(
-                equalTo: safeAreaGuide.topAnchor,
-                constant: 16
-            ),
-            avatarImageView.leftAnchor.constraint(
-                equalTo: safeAreaGuide.leftAnchor,
-                constant: 16
-            ),
+        avatarImageView.snp.makeConstraints {
+            $0.height.equalTo(100)
+            $0.width.equalTo(100)
+            $0.top.equalTo(safeAreaGuide).offset(16)
+            $0.left.equalTo(safeAreaGuide).offset(16)
+        }
 
-            fullNameLabel.heightAnchor.constraint(equalToConstant: 22),
-            fullNameLabel.topAnchor.constraint(
-                equalTo: safeAreaGuide.topAnchor,
-                constant: 27
-            ),
-            fullNameLabel.leftAnchor.constraint(
-                equalTo: avatarImageView.rightAnchor,
-                constant: 14
-            ),
-            fullNameLabel.rightAnchor.constraint(
-                equalTo: safeAreaGuide.rightAnchor,
-                constant: -16
-            ),
+        fullNameLabel.snp.makeConstraints {
+            $0.top.equalTo(safeAreaGuide).offset(27)
+            $0.left.equalTo(avatarImageView.snp.right).offset(16)
+        }
 
-            setStatusButton.leadingAnchor.constraint(
-                equalTo: safeAreaGuide.leadingAnchor,
-                constant: 16
-            ),
-            setStatusButton.trailingAnchor.constraint(
-                equalTo: safeAreaGuide.trailingAnchor,
-                constant: -16
-            ),
-            setStatusButton.topAnchor.constraint(
-                equalTo: avatarImageView.bottomAnchor,
-                constant: 46
-            ),
-            setStatusButton.heightAnchor.constraint(equalToConstant: 50),
-            setStatusButton.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor, constant: -16),
+        setStatusButton.snp.makeConstraints {
+            $0.left.equalTo(safeAreaGuide).offset(16)
+            $0.right.equalTo(safeAreaGuide).offset(-16)
+            $0.top.equalTo(avatarImageView.snp.bottom).offset(46)
+            $0.height.equalTo(50)
+            $0.bottom.equalTo(safeAreaGuide).offset(-16)
+        }
 
-            statusLabel.leftAnchor.constraint(
-                equalTo: safeAreaGuide.leftAnchor,
-                constant: 130
-            ),
-            statusLabel.rightAnchor.constraint(
-                equalTo: safeAreaGuide.rightAnchor,
-                constant: -16
-            ),
-            statusLabel.bottomAnchor.constraint(
-                equalTo: setStatusButton.topAnchor,
-                constant: -64
-            ),
-            statusLabel.heightAnchor.constraint(equalToConstant: 18),
+        statusLabel.snp.makeConstraints {
+            $0.left.equalTo(safeAreaGuide).offset(130)
+            $0.right.equalTo(safeAreaGuide).offset(-16)
+            $0.bottom.equalTo(setStatusButton.snp.top).offset(-64)
+        }
 
-            statusTextField.leftAnchor.constraint(equalTo: statusLabel.leftAnchor),
-            statusTextField.rightAnchor.constraint(
-                equalTo: safeAreaGuide.rightAnchor,
-                constant: -16
-            ),
-            statusTextField.topAnchor.constraint(
-                equalTo: statusLabel.bottomAnchor,
-                constant: 10
-            ),
-            statusTextField.heightAnchor.constraint(equalToConstant: 40),
+        statusTextField.snp.makeConstraints {
+            $0.left.equalTo(statusLabel)
+            $0.right.equalTo(safeAreaGuide).offset(-16)
+            $0.top.equalTo(statusLabel.snp.bottom).offset(10)
+            $0.height.equalTo(40)
+        }
 
-            closeButton.centerXAnchor.constraint(
-                equalTo: safeAreaGuide.rightAnchor,
-                constant: -50
-            ),
-            closeButton.centerYAnchor.constraint(
-                equalTo: safeAreaGuide.topAnchor,
-                constant: 50
-            ),
-            closeButton.heightAnchor.constraint(equalToConstant: 30),
-            closeButton.widthAnchor.constraint(equalToConstant: 30),
+        closeButton.snp.makeConstraints {
+            $0.centerX.equalTo(safeAreaGuide.snp.right).offset(-50)
+            $0.centerY.equalTo(safeAreaGuide.snp.top).offset(50)
+            $0.height.equalTo(30)
+            $0.width.equalTo(30)
+        }
 
-            viewForCloseButton.leftAnchor.constraint(equalTo: closeButton.leftAnchor),
-            viewForCloseButton.rightAnchor.constraint(equalTo: closeButton.rightAnchor),
-            viewForCloseButton.topAnchor.constraint(equalTo: closeButton.topAnchor),
-            viewForCloseButton.bottomAnchor.constraint(equalTo: closeButton.bottomAnchor)
-        ])
+        viewForCloseButton.snp.makeConstraints {
+            $0.edges.equalTo(closeButton)
+        }
     }
 }
 
