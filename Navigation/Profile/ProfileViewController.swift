@@ -3,6 +3,24 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
+    let user: User = {
+        #if DEBUG
+        return User(
+            name: "Test",
+            login: "Test123",
+            status: "Testing",
+            avatar: UIImage(named: "cat")!
+        )
+        #else
+        return User(
+            name: "Alexander",
+            login: "Alex123",
+            status: "Сплю",
+            avatar: UIImage(named: "cat")!
+        )
+        #endif
+    }()
+
     private let postData = Post.make()
 
     private let headerView = ProfileHeaderView()
@@ -63,6 +81,9 @@ class ProfileViewController: UIViewController {
 
     private func tuneTableView() {
         tableView.estimatedRowHeight = 1500
+        headerView.statusLabel.text = user.status
+        headerView.fullNameLabel.text = user.name
+        headerView.avatarImageView.image = UIImage.cropToSquare(user.avatar)
         tableView.setAndLayout(headerView: headerView)
         tableView.tableFooterView = UIView()
 
