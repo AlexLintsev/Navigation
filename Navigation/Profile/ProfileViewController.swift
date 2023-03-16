@@ -3,23 +3,7 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
-    let user: User = {
-        #if DEBUG
-        return User(
-            name: "Test",
-            login: "Test123",
-            status: "Testing",
-            avatar: UIImage(named: "cat")!
-        )
-        #else
-        return User(
-            name: "Alexander",
-            login: "Alex123",
-            status: "Сплю",
-            avatar: UIImage(named: "cat")!
-        )
-        #endif
-    }()
+    let user: User
 
     private let postData = Post.make()
 
@@ -37,6 +21,15 @@ class ProfileViewController: UIViewController {
     private enum CellReuseID: String {
         case post = "PostTableViewCell_ReuseID"
         case photos = "PhotosTableViewCell_ReuseID"
+    }
+
+    init(user: User) {
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

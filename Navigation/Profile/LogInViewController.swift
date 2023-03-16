@@ -244,19 +244,20 @@ class LogInViewController: UIViewController {
     }
 
     @objc private func buttonPressed(_ sender: UIButton) {
-        let viewController = ProfileViewController()
         let userService: UserService
 
         #if DEBUG
         userService = TestUserService()
         #else
-        userService = CurrentUserService(viewController.user)
+        userService = CurrentUserService()
         #endif
 
-        guard let _ = userService.checkLogin(emailTextField.text ?? "") else {
+        guard let user = userService.checkLogin(emailTextField.text ?? "") else {
             errorLoginLabel.isHidden = false
             return
         }
+
+        let viewController = ProfileViewController(user: user)
 
         guard var viewControllers = navigationController?.viewControllers else { return }
         _ = viewControllers.popLast()
