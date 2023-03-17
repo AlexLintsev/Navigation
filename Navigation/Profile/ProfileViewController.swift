@@ -3,6 +3,8 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
+    let user: User
+
     private let postData = Post.make()
 
     private let headerView = ProfileHeaderView()
@@ -19,6 +21,15 @@ class ProfileViewController: UIViewController {
     private enum CellReuseID: String {
         case post = "PostTableViewCell_ReuseID"
         case photos = "PhotosTableViewCell_ReuseID"
+    }
+
+    init(user: User) {
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -63,6 +74,9 @@ class ProfileViewController: UIViewController {
 
     private func tuneTableView() {
         tableView.estimatedRowHeight = 1500
+        headerView.statusLabel.text = user.status
+        headerView.fullNameLabel.text = user.name
+        headerView.avatarImageView.image = UIImage.cropToSquare(user.avatar)
         tableView.setAndLayout(headerView: headerView)
         tableView.tableFooterView = UIView()
 

@@ -68,6 +68,16 @@ class LogInViewController: UIViewController {
         return button
     }()
 
+    private lazy var errorLoginLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Неверное имя пользователя или пароль"
+        label.textColor = .red
+        label.font = UIFont(name: "systemFont", size: 16)
+        label.isHidden = true
+        return label
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -99,6 +109,7 @@ class LogInViewController: UIViewController {
         loginView.addSubview(passwordTextField)
         loginView.addSubview(separatorView)
         view.addSubview(loginButton)
+        view.addSubview(errorLoginLabel)
     }
 
     private func setupActions() {
@@ -184,7 +195,13 @@ class LogInViewController: UIViewController {
                 equalTo: safeAreaGuide.rightAnchor,
                 constant: -16
             ),
-            loginButton.heightAnchor.constraint(equalToConstant: 50)
+            loginButton.heightAnchor.constraint(equalToConstant: 50),
+
+            errorLoginLabel.topAnchor.constraint(
+                equalTo: loginButton.bottomAnchor,
+                constant: 16
+            ),
+            errorLoginLabel.centerXAnchor.constraint(equalTo: safeAreaGuide.centerXAnchor)
         ]
     }
 
@@ -227,9 +244,25 @@ class LogInViewController: UIViewController {
     }
 
     @objc private func buttonPressed(_ sender: UIButton) {
-        let viewController = ProfileViewController()
+        let userService: UserService
 
-        navigationController?.pushViewController(viewController, animated: true)
+        #if DEBUG
+        userService = TestUserService()
+        #else
+        userService = CurrentUserService()
+        #endif
+
+        guard let user = userService.checkLogin(emailTextField.text ?? "") else {
+            errorLoginLabel.isHidden = false
+            return
+        }
+
+        let viewController = ProfileViewController(user: user)
+
+        guard var viewControllers = navigationController?.viewControllers else { return }
+        _ = viewControllers.popLast()
+        viewControllers.append(viewController)
+        navigationController?.setViewControllers(viewControllers, animated: true)
     }
 }
 
