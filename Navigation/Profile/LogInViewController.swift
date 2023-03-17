@@ -1,6 +1,7 @@
 import UIKit
 
 class LogInViewController: UIViewController {
+    var loginDelegate: LoginViewControllerDelegate?
 
     private var constraintsArray: [NSLayoutConstraint] = []
 
@@ -252,12 +253,26 @@ class LogInViewController: UIViewController {
         userService = CurrentUserService()
         #endif
 
-        guard let user = userService.checkLogin(emailTextField.text ?? "") else {
-            errorLoginLabel.isHidden = false
+        guard let isLoginCorrect = loginDelegate?.check(
+            login: emailTextField.text ?? "",
+            password: passwordTextField.text ?? ""
+        ) else { return }
+
+        if !isLoginCorrect {
+            let alert = UIAlertController(
+                title: "Введен неверный логин/пароль",
+                message: "Попробуйте еще раз",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+            self.present(alert, animated: true, completion: nil)
             return
         }
 
-        let viewController = ProfileViewController(user: user)
+        let viewController = ProfileViewController(user: userService.getUser())
 
         guard var viewControllers = navigationController?.viewControllers else { return }
         _ = viewControllers.popLast()
