@@ -1,4 +1,5 @@
 import UIKit
+import iOSIntPackage
 
 class PhotosViewController: UIViewController {
 
@@ -7,6 +8,10 @@ class PhotosViewController: UIViewController {
             .compactMap { UIImage(named: String($0)) }
             .map { UIImage.cropToSquare($0) }
     }()
+
+    private var imageListWithDelay: [UIImage] = []
+
+    private var imagePublisherFacade = ImagePublisherFacade()
 
     private enum Constants {
         static let padding: CGFloat = 8.0
@@ -35,6 +40,18 @@ class PhotosViewController: UIViewController {
         setupView()
         setupSubviews()
         setupLayouts()
+
+        imagePublisherFacade.subscribe(self)
+        imagePublisherFacade.addImagesWithTimer(
+            time: 0.5,
+            repeat: imageList.count,
+            userImages: imageList
+        )
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        imagePublisherFacade.removeSubscription(for: self)
+        print("Unsubscribed")
     }
 
     private func setupView() {
@@ -66,7 +83,7 @@ extension PhotosViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        imageList.count
+        imageListWithDelay.count
     }
 
     func collectionView(
@@ -131,3 +148,9 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension PhotosViewController: ImageLibrarySubscriber {
+    func receive(images: [UIImage]) {
+        imageListWithDelay = images
+        collectionView.reloadData()
+    }
+}
