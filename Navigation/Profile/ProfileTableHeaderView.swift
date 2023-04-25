@@ -35,17 +35,12 @@ class ProfileHeaderView: UIView {
         return view
     }()
 
-    private lazy var closeButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(
-            UIImage(named: "closeButton"),
-            for: .normal
-        )
-        button.isHidden = true
-        button.isUserInteractionEnabled = true
-        return button
-    }()
+    private lazy var closeButton = CustomButton(
+        isUserInteractionEnabled: true,
+        titleLabel: nil,
+        backgroundColor: nil,
+        imageName: "closeButton"
+    )
 
     private lazy var viewForCloseButton: UIView = {
         let view = UIView()
@@ -64,20 +59,12 @@ class ProfileHeaderView: UIView {
         return label
     }()
 
-    private lazy var setStatusButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = true
-        button.setTitle("Set status", for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .systemBlue
-        button.layer.cornerRadius = 4
-        button.layer.shadowOffset = CGSize(width: 4, height: 4)
-        button.layer.shadowRadius = 4
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.7
-        return button
-    }()
+    private lazy var setStatusButton = CustomButton(
+        isUserInteractionEnabled: true,
+        titleLabel: "Set status",
+        backgroundColor: .systemBlue,
+        imageName: nil
+    )
 
     lazy var statusLabel: UILabel = {
         let label = UILabel()
@@ -114,6 +101,7 @@ class ProfileHeaderView: UIView {
         addSubview(avatarImageView)
         addSubview(closeButton)
         addSubview(viewForCloseButton)
+        setupSubviews()
         setupConstraints()
         setupActions()
     }
@@ -122,19 +110,10 @@ class ProfileHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc func statusButtonPressed(_ sender: UIButton) {
-        statusLabel.text = statusText
-        statusTextField.text = nil
-        print("Status updated: \(statusText)")
-    }
-
     @objc func statusTextChanged(_ statusTextField: TextFieldWithPadding) {
         statusText = statusTextField.text ?? ""
     }
 
-    @objc func closeButtonPressed(_ sender: UIButton) {
-        launchReverseAnimationAvatar()
-    }
 
     @objc func didTapAvatar() {
         launchAnimationAvatar()
@@ -232,23 +211,32 @@ class ProfileHeaderView: UIView {
         )
     }
 
+    private func setupSubviews() {
+        setStatusButton.tintColor = .white
+        setStatusButton.layer.cornerRadius = 4
+        setStatusButton.layer.shadowOffset = CGSize(width: 4, height: 4)
+        setStatusButton.layer.shadowRadius = 4
+        setStatusButton.layer.shadowColor = UIColor.black.cgColor
+        setStatusButton.layer.shadowOpacity = 0.7
+
+        closeButton.isHidden = true
+    }
+
     private func setupActions() {
-        setStatusButton.addTarget(
-            self,
-            action: #selector(statusButtonPressed(_:)),
-            for: .touchUpInside
-        )
+        setStatusButton.tapAction = {
+            self.statusLabel.text = self.statusText
+            self.statusTextField.text = nil
+            print("Status updated: \(self.statusText)")
+        }
+
+        closeButton.tapAction = {
+            self.launchReverseAnimationAvatar()
+        }
 
         statusTextField.addTarget(
             self,
             action: #selector(statusTextChanged(_:)),
             for: .editingChanged
-        )
-
-        closeButton.addTarget(
-            self,
-            action: #selector(closeButtonPressed(_:)),
-            for: .touchUpInside
         )
     }
 
