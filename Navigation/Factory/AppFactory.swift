@@ -1,8 +1,9 @@
-//
-//  AppFactory.swift
-//  Navigation
-//
-//  Created by Александр Линцев on 09.05.2023.
-//
+import UIKit
 
-import Foundation
+final class AppFactory {
+
+    func makeModule(ofType moduleType: Module.ModuleType) -> Module {
+        
+    }
+}
+

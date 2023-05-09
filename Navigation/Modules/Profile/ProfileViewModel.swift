@@ -1,8 +1,13 @@
-//
-//  ProfileViewModel.swift
-//  Navigation
-//
-//  Created by Александр Линцев on 09.05.2023.
-//
-
 import Foundation
+
+final class ProfileViewModel {
+    enum State {
+        case initialLogin
+        case loginSuccess
+        case loginFail
+    }
+
+    enum ViewInput {
+
+    }
+}
