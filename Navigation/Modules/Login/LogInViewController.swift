@@ -3,6 +3,8 @@ import UIKit
 class LogInViewController: UIViewController {
     var loginDelegate: LoginViewControllerDelegate?
 
+    private let viewModel: LoginViewModelProtocol
+
     private var constraintsArray: [NSLayoutConstraint] = []
 
     private lazy var logoImageView: UIView = {
@@ -79,6 +81,15 @@ class LogInViewController: UIViewController {
         return label
     }()
 
+    init(viewModel: LoginViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -86,6 +97,7 @@ class LogInViewController: UIViewController {
         addSubViews()
         setupConstraintsKeyboardHide()
         setupActions()
+        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -225,6 +237,64 @@ class LogInViewController: UIViewController {
         )
     }
 
+    private func bindViewModel() {
+        viewModel.onStateDidChange = { [weak self] state in
+            guard let self = self else {
+                return
+            }
+            switch state {
+            case .initialLogin:
+                return
+            case .loginEmpty:
+                let alert = UIAlertController(
+                    title: "Поле логин/пароль не заполнено",
+                    message: "Заполните необходимые поля данными",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("OK", comment: "Default action"),
+                    style: .default
+                ))
+                self.present(alert, animated: true, completion: nil)
+                return
+            case .loginFail:
+                let alert = UIAlertController(
+                    title: "Введен неверный логин/пароль",
+                    message: "Попробуйте еще раз",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("OK", comment: "Default action"),
+                    style: .default
+                ))
+                self.present(alert, animated: true, completion: nil)
+                return
+            case .loginSuccess:
+                let userService: UserService
+                #if DEBUG
+                userService = TestUserService()
+                #else
+                userService = CurrentUserService()
+                #endif
+                let viewController = ProfileViewController(user: userService.getUser())
+                guard var viewControllers = self.navigationController?.viewControllers else { return }
+                _ = viewControllers.popLast()
+                viewControllers.append(viewController)
+                self.navigationController?.setViewControllers(viewControllers, animated: true)
+            }
+        }
+    }
+
+    private func checkLogin() -> Bool? {
+        guard !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty else {
+            return nil
+        }
+        return loginDelegate?.check(
+            login: emailTextField.text!,
+            password: passwordTextField.text!
+        )
+    }
+
     @objc private func willShowKeyboard(_ notification: NSNotification) {
         let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height ?? 0.0
 
@@ -245,39 +315,41 @@ class LogInViewController: UIViewController {
     }
 
     @objc private func buttonPressed(_ sender: UIButton) {
-        let userService: UserService
-
-        #if DEBUG
-        userService = TestUserService()
-        #else
-        userService = CurrentUserService()
-        #endif
-
-        guard let isLoginCorrect = loginDelegate?.check(
-            login: emailTextField.text ?? "",
-            password: passwordTextField.text ?? ""
-        ) else { return }
-
-        if !isLoginCorrect {
-            let alert = UIAlertController(
-                title: "Введен неверный логин/пароль",
-                message: "Попробуйте еще раз",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(
-                title: NSLocalizedString("OK", comment: "Default action"),
-                style: .default
-            ))
-            self.present(alert, animated: true, completion: nil)
-            return
-        }
-
-        let viewController = ProfileViewController(user: userService.getUser())
-
-        guard var viewControllers = navigationController?.viewControllers else { return }
-        _ = viewControllers.popLast()
-        viewControllers.append(viewController)
-        navigationController?.setViewControllers(viewControllers, animated: true)
+//        let userService: UserService
+//
+//        #if DEBUG
+//        userService = TestUserService()
+//        #else
+//        userService = CurrentUserService()
+//        #endif
+//
+//        guard let isLoginCorrect = loginDelegate?.check(
+//            login: emailTextField.text ?? "",
+//            password: passwordTextField.text ?? ""
+//        ) else { return }
+//
+//        if !isLoginCorrect {
+//            let alert = UIAlertController(
+//                title: "Введен неверный логин/пароль",
+//                message: "Попробуйте еще раз",
+//                preferredStyle: .alert
+//            )
+//            alert.addAction(UIAlertAction(
+//                title: NSLocalizedString("OK", comment: "Default action"),
+//                style: .default
+//            ))
+//            self.present(alert, animated: true, completion: nil)
+//            return
+//        }
+//
+//        let viewController = ProfileViewController(user: userService.getUser())
+//
+//        guard var viewControllers = navigationController?.viewControllers else { return }
+//        _ = viewControllers.popLast()
+//        viewControllers.append(viewController)
+//        navigationController?.setViewControllers(viewControllers, animated: true)
+        self.viewModel.isLoginCorrect = checkLogin()
+        self.viewModel.updateState(viewInput: .loginButtonDidTap)
     }
 }
 
