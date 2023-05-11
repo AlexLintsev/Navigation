@@ -2,9 +2,7 @@ import UIKit
 
 class FeedViewController: UIViewController {
 
-    private let post = "Title from feedController"
-
-    private let feedModel = FeedModel()
+    private let viewModel: FeedViewModelProtocol
 
     private lazy var button1 = CustomButton(
         isUserInteractionEnabled: true,
@@ -55,6 +53,15 @@ class FeedViewController: UIViewController {
         return label
     }()
 
+    init(viewModel: FeedViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Feed"
@@ -73,41 +80,19 @@ class FeedViewController: UIViewController {
         setupProperties(for: checkGuessButton)
         setupConstraints()
         setupActions()
+        bindViewModel()
     }
 
     private func setupActions() {
         button1.tapAction = {
-            let viewController = PostViewController()
-            viewController.postTitle = self.post
-
-            let postNavigationController = UINavigationController(rootViewController: viewController)
-
-            postNavigationController.modalTransitionStyle = .crossDissolve
-            postNavigationController.modalPresentationStyle = .fullScreen
-
-            self.present(postNavigationController, animated: true)
+            self.viewModel.updateState(viewInput: .simpleButtonDidTap)
         }
 
         button2.tapAction = button1.tapAction
 
-        checkGuessButton.tapAction = { [self] in
-            guard textField.text != nil && textField.text != "" else {
-                let alert = UIAlertController(
-                    title: "Поле с паролем не заполнено",
-                    message: "Введите пароль в текстовое поле",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(
-                    title: NSLocalizedString("OK", comment: "Default action"),
-                    style: .default
-                ))
-                present(alert, animated: true, completion: nil)
-                label.isHidden = true
-                return
-            }
-            let isWordCorrect = feedModel.check(word: textField.text!)
-            label.backgroundColor = isWordCorrect ? .green : .red
-            label.isHidden = false
+        checkGuessButton.tapAction = {
+            self.viewModel.isPasswordCorrect = self.checkPassword()
+            self.viewModel.updateState(viewInput: .checkGuessButtonDidTap)
         }
     }
 
@@ -156,5 +141,43 @@ class FeedViewController: UIViewController {
         button.layer.cornerRadius = 3
         button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.systemBlue.cgColor
+    }
+
+    private func bindViewModel() {
+        viewModel.onStateDidChange = { [weak self] state in
+            guard let self = self else {
+                return
+            }
+            switch state {
+            case .initialFeed:
+                return
+            case .passwordEmpty:
+                let alert = UIAlertController(
+                    title: "Поле с паролем не заполнено",
+                    message: "Введите пароль в текстовое поле",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("OK", comment: "Default action"),
+                    style: .default
+                ))
+                self.present(alert, animated: true, completion: nil)
+                self.label.isHidden = true
+                return
+            case .passwordWrong:
+                self.label.backgroundColor = .red
+                break
+            case .passwordCorrect:
+                self.label.backgroundColor = .green
+            }
+            self.label.isHidden = false
+        }
+    }
+
+    private func checkPassword() -> Bool? {
+        guard textField.text != nil && textField.text != "" else {
+            return nil
+        }
+        return FeedViewModel.check(word: textField.text!)
     }
 }
