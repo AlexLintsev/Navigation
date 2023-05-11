@@ -8,7 +8,6 @@ struct Module {
     enum ModuleType {
         case feed
         case login
-        case profile
     }
 
     let moduleType: ModuleType
@@ -19,7 +18,7 @@ struct Module {
 extension Module.ModuleType {
     var tabBarItem: UITabBarItem {
         switch self {
-        case .profile, .login:
+        case .login:
             let tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "profile"), tag: 0)
             tabBarItem.imageInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
             return tabBarItem

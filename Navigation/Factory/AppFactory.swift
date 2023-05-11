@@ -11,16 +11,6 @@ final class AppFactory {
             loginViewController.loginDelegate = logInFactory.makeLogInInspector()
             let view = UINavigationController(rootViewController: loginViewController)
             return Module(moduleType: moduleType, viewModel: viewModel, view: view)
-        case .profile:
-            let viewModel = ProfileViewModel()
-            let userService: UserService
-            #if DEBUG
-            userService = TestUserService()
-            #else
-            userService = CurrentUserService()
-            #endif
-            let view = UINavigationController(rootViewController: ProfileViewController(user: userService.getUser()))
-            return Module(moduleType: moduleType, viewModel: viewModel, view: view)
         case .feed:
             let viewModel = FeedViewModel()
             let view = UINavigationController(rootViewController: FeedViewController(viewModel: viewModel))
