@@ -54,6 +54,14 @@ class LogInViewController: UIViewController {
         return view
     }()
 
+    private lazy var indicatorView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.hidesWhenStopped = true
+        view.color = .white
+        return view
+    }()
+
     private lazy var loginButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +73,18 @@ class LogInViewController: UIViewController {
         button.setBackgroundImage(image!.withAlpha(0.8), for: .selected)
         button.setBackgroundImage(image!.withAlpha(0.8), for: .disabled)
         button.setBackgroundImage(image!.withAlpha(0.8), for: .highlighted)
+        button.clipsToBounds = true
+        return button
+    }()
+
+    private lazy var brutePasswordButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 10
+        button.tintColor = .white
+        button.setTitle("Подобрать пароль", for: .normal)
+        let image = UIImage(named: "blue_pixel")
+        button.setBackgroundImage(image, for: .normal)
         button.clipsToBounds = true
         return button
     }()
@@ -110,13 +130,21 @@ class LogInViewController: UIViewController {
         loginView.addSubview(passwordTextField)
         loginView.addSubview(separatorView)
         view.addSubview(loginButton)
+        view.addSubview(brutePasswordButton)
+        view.addSubview(indicatorView)
         view.addSubview(errorLoginLabel)
     }
 
     private func setupActions() {
         loginButton.addTarget(
             self,
-            action: #selector(buttonPressed(_:)),
+            action: #selector(loginButtonPressed(_:)),
+            for: .touchUpInside
+        )
+
+        brutePasswordButton.addTarget(
+            self,
+            action: #selector(brutePasswordButtonPressed(_:)),
             for: .touchUpInside
         )
     }
@@ -202,7 +230,29 @@ class LogInViewController: UIViewController {
                 equalTo: loginButton.bottomAnchor,
                 constant: 16
             ),
-            errorLoginLabel.centerXAnchor.constraint(equalTo: safeAreaGuide.centerXAnchor)
+            errorLoginLabel.centerXAnchor.constraint(equalTo: safeAreaGuide.centerXAnchor),
+
+            brutePasswordButton.topAnchor.constraint(
+                equalTo: loginButton.bottomAnchor,
+                constant: 16
+            ),
+            brutePasswordButton.leftAnchor.constraint(
+                equalTo: safeAreaGuide.leftAnchor,
+                constant: 16
+            ),
+            brutePasswordButton.rightAnchor.constraint(
+                equalTo: safeAreaGuide.rightAnchor,
+                constant: -16
+            ),
+            brutePasswordButton.heightAnchor.constraint(equalToConstant: 50),
+
+            indicatorView.centerYAnchor.constraint(equalTo: brutePasswordButton.centerYAnchor),
+            indicatorView.heightAnchor.constraint(equalToConstant: 30),
+            indicatorView.widthAnchor.constraint(equalToConstant: 30),
+            indicatorView.rightAnchor.constraint(
+                equalTo: brutePasswordButton.rightAnchor,
+                constant: -16
+            )
         ]
     }
 
@@ -225,6 +275,19 @@ class LogInViewController: UIViewController {
         )
     }
 
+    func changeTextFieldValue(password: String) {
+        passwordTextField.isSecureTextEntry = false
+        passwordTextField.text = password
+    }
+
+    func showIndicator() {
+        indicatorView.startAnimating()
+    }
+
+    func hideIndicator() {
+        indicatorView.stopAnimating()
+    }
+
     @objc private func willShowKeyboard(_ notification: NSNotification) {
         let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height ?? 0.0
 
@@ -244,7 +307,7 @@ class LogInViewController: UIViewController {
         view.layoutIfNeeded()
     }
 
-    @objc private func buttonPressed(_ sender: UIButton) {
+    @objc private func loginButtonPressed(_ sender: UIButton) {
         let userService: UserService
 
         #if DEBUG
@@ -278,6 +341,13 @@ class LogInViewController: UIViewController {
         _ = viewControllers.popLast()
         viewControllers.append(viewController)
         navigationController?.setViewControllers(viewControllers, animated: true)
+    }
+
+    @objc private func brutePasswordButtonPressed(_ sender: UIButton) {
+        let queue = OperationQueue()
+        let operation = BruteForceOperation(loginViewController: self)
+        operation.queuePriority = .high
+        queue.addOperation(operation)
     }
 }
 
