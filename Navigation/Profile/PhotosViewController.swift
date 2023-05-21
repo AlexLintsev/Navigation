@@ -9,9 +9,8 @@ class PhotosViewController: UIViewController {
             .map { UIImage.cropToSquare($0) }
     }()
 
-    private var imageListWithDelay: [UIImage] = []
-
-    private var imagePublisherFacade = ImagePublisherFacade()
+    private var updatedImagelist: [UIImage] = []
+    private var imageProcessor = ImageProcessor()
 
     private enum Constants {
         static let padding: CGFloat = 8.0
@@ -41,17 +40,25 @@ class PhotosViewController: UIViewController {
         setupSubviews()
         setupLayouts()
 
-        imagePublisherFacade.subscribe(self)
-        imagePublisherFacade.addImagesWithTimer(
-            time: 0.5,
-            repeat: imageList.count,
-            userImages: imageList
+        let startTime = Date().timeIntervalSince1970
+        imageProcessor.processImagesOnThread(
+            sourceImages: imageList,
+            filter: .colorInvert,
+            qos: .background,
+            completion: { updatedImage in
+                self.updatedImagelist = updatedImage.map { UIImage(cgImage: $0!) }
+            }
         )
-    }
+        while (updatedImagelist.isEmpty) { }
+        getLeadTime(startTime)
+        collectionView.reloadData()
 
-    override func viewDidDisappear(_ animated: Bool) {
-        imagePublisherFacade.removeSubscription(for: self)
-        print("Unsubscribed")
+        /*
+         Qos: .userInitiated, время выполнения: 841 ms
+         Qos: .userInteractive, время выполнения: 837 ms
+         Qos: .default, время выполнения: 821 ms
+         Qos: .background, время выполнения: 3403 ms
+         */
     }
 
     private func setupView() {
@@ -83,7 +90,7 @@ extension PhotosViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        imageListWithDelay.count
+        updatedImagelist.count
     }
 
     func collectionView(
@@ -95,7 +102,7 @@ extension PhotosViewController: UICollectionViewDataSource {
             for: indexPath
         ) as! ProfileCell
 
-        let image = imageList[indexPath.row]
+        let image = updatedImagelist[indexPath.row]
         cell.update(with: image)
         return cell
     }
@@ -146,11 +153,9 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     ) -> CGFloat {
         Constants.padding
     }
-}
 
-extension PhotosViewController: ImageLibrarySubscriber {
-    func receive(images: [UIImage]) {
-        imageListWithDelay = images
-        collectionView.reloadData()
+    private func getLeadTime(_ startTime: TimeInterval) {
+        let timeSpent = Date().timeIntervalSince1970 - startTime
+        print("Time spent: \(timeSpent * 1000) ms")
     }
 }
