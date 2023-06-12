@@ -3,6 +3,12 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
+    // Добавить таймер в profileViewController для появления сообщения о том, что нужно
+    // сделать перерыв на отдых от соц. сетей. Для удобства проверки функционала задать
+    // период срабатывания 10 секунд
+
+    private var timer: Timer?
+
     let user: User
 
     private let postData = Post.make()
@@ -26,6 +32,7 @@ class ProfileViewController: UIViewController {
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
+        timer = startTimer(interval: 10)
     }
 
     required init?(coder: NSCoder) {
@@ -93,6 +100,51 @@ class ProfileViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
     }
+
+    private func startTimer(interval: Double) -> Timer {
+        Timer.scheduledTimer(timeInterval: interval,
+                             target: self,
+                             selector: #selector(timerDidFire),
+                             userInfo: nil,
+                             repeats: false)
+    }
+
+    @objc func timerDidFire() {
+        timer?.invalidate()
+        let alert = UIAlertController(
+            title: "Нужен отдых",
+            message: "Рекомендуется отдохнуть от социальных сетей",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("OK", comment: "Default action"),
+            style: .default,
+            handler: {_ in
+                self.timer = self.startTimer(interval: 10)
+            }
+        ))
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("Отмена", comment: "Additional action"),
+            style: .default,
+            handler: {_ in
+                let alert = UIAlertController(
+                    title: "Еще 5 секунд",
+                    message: "Выделено дополнительно 5 секунд перед перерывом",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("OK", comment: "Default action"),
+                    style: .default,
+                    handler: {_ in
+                        self.timer = self.startTimer(interval: 5)
+                    }
+                ))
+                self.present(alert, animated: true, completion: nil)
+            }
+        ))
+
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension ProfileViewController: UITableViewDataSource {
@@ -147,4 +199,14 @@ extension ProfileViewController: UITableViewDataSource {
 
 extension ProfileViewController: UITableViewDelegate {
 
+}
+
+extension Timer {
+    static func start() -> Timer {
+        Timer.scheduledTimer(timeInterval: 10,
+                             target: self,
+                             selector: #selector(ProfileViewController.timerDidFire),
+                             userInfo: nil,
+                             repeats: false)
+    }
 }
