@@ -3,6 +3,8 @@ import UIKit
 class LogInViewController: UIViewController {
     var loginDelegate: LoginViewControllerDelegate?
 
+    private var countOfWrongLoginEnter = 0
+
     private var constraintsArray: [NSLayoutConstraint] = []
 
     private lazy var logoImageView: UIView = {
@@ -259,16 +261,12 @@ class LogInViewController: UIViewController {
         ) else { return }
 
         if !isLoginCorrect {
-            let alert = UIAlertController(
-                title: "Введен неверный логин/пароль",
-                message: "Попробуйте еще раз",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(
-                title: NSLocalizedString("OK", comment: "Default action"),
-                style: .default
-            ))
-            self.present(alert, animated: true, completion: nil)
+            countOfWrongLoginEnter += 1
+            do {
+                try getAlertAfterWrongLogin(countOfWrongLoginEnter)
+            } catch {
+                print(error.localizedDescription)
+            }
             return
         }
 
@@ -278,6 +276,38 @@ class LogInViewController: UIViewController {
         _ = viewControllers.popLast()
         viewControllers.append(viewController)
         navigationController?.setViewControllers(viewControllers, animated: true)
+    }
+
+    private func getAlertAfterWrongLogin(_ countOfWrongLoginEnter: Int) throws {
+        if countOfWrongLoginEnter < 3 {
+            let alert = UIAlertController(
+                title: "Введен неверный логин/пароль",
+                message: "Осталось попыток: \(3 - countOfWrongLoginEnter)",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+            self.present(alert, animated: true, completion: nil)
+            throw LoginError.wrongLoginData
+        } else {
+            let alert = UIAlertController(
+                title: "Превышено максимальное число попыток авторизации",
+                message: "Повторите попытку позднее",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+            self.present(alert, animated: true, completion: nil)
+            throw LoginError.wrongLoginData
+        }
+    }
+
+    enum LoginError: Error {
+        case wrongLoginData
     }
 }
 

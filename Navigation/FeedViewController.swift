@@ -91,23 +91,79 @@ class FeedViewController: UIViewController {
         button2.tapAction = button1.tapAction
 
         checkGuessButton.tapAction = { [self] in
-            guard textField.text != nil && textField.text != "" else {
-                let alert = UIAlertController(
-                    title: "Поле с паролем не заполнено",
-                    message: "Введите пароль в текстовое поле",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(
-                    title: NSLocalizedString("OK", comment: "Default action"),
-                    style: .default
-                ))
-                present(alert, animated: true, completion: nil)
-                label.isHidden = true
-                return
+            checkPassword { [self] result in
+                switch result {
+                case .success(let alert):
+                    label.backgroundColor = .green
+                    label.isHidden = false
+                    present(alert, animated: true, completion: nil)
+                case .failure(let error):
+                    handle(error: error)
+                }
             }
-            let isWordCorrect = feedModel.check(word: textField.text!)
-            label.backgroundColor = isWordCorrect ? .green : .red
+        }
+    }
+
+    private func checkPassword(completition: @escaping ((Result<UIAlertController, PasswordError>)) -> Void) {
+        guard textField.text != nil && textField.text != "" else {
+            completition(.failure(.emptyPassword))
+            return
+        }
+        let isWordCorrect = feedModel.check(word: textField.text!)
+        if !isWordCorrect {
+            completition(.failure(.wrongPassword))
+        } else {
+            completition(.success(getAlertController(error: nil)))
+        }
+    }
+
+    private func getAlertController(error: PasswordError?) -> UIAlertController {
+        var alert = UIAlertController()
+        switch error {
+        case .emptyPassword:
+            alert = UIAlertController(
+                title: "Пароль не введен",
+                message: "Введите пароль",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+        case .wrongPassword:
+            alert = UIAlertController(
+                title: "Пароль введен неверно",
+                message: "Повторите попытку",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+        default:
+            alert = UIAlertController(
+                title: "Пароль введен успешно",
+                message: "",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default
+            ))
+        }
+        return alert
+    }
+
+    private func handle(error: PasswordError) {
+        print(error.localizedDescription)
+        switch error {
+        case .emptyPassword:
+            label.isHidden = true
+            present(getAlertController(error: .emptyPassword), animated: true, completion: nil)
+        case .wrongPassword:
+            label.backgroundColor = .red
             label.isHidden = false
+            present(getAlertController(error: .wrongPassword), animated: true, completion: nil)
         }
     }
 
@@ -156,5 +212,21 @@ class FeedViewController: UIViewController {
         button.layer.cornerRadius = 3
         button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.systemBlue.cgColor
+    }
+}
+
+enum PasswordError: Error {
+    case wrongPassword
+    case emptyPassword
+}
+
+extension PasswordError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .wrongPassword:
+            return NSLocalizedString("Пароль введен неверно", comment: "My error1")
+        case .emptyPassword:
+            return NSLocalizedString("Пароль не введен", comment: "My error2")
+        }
     }
 }
