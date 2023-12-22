@@ -39,6 +39,8 @@
 		6AE0B6B629F6B17000BA45C2 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0B6B529F6B17000BA45C2 /* CustomButton.swift */; };
 		6AE0B6B829F831F800BA45C2 /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0B6B729F831F800BA45C2 /* FeedModel.swift */; };
 		6AF4746E296711E500843E8A /* ProfileTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF4746D296711E500843E8A /* ProfileTableHeaderView.swift */; };
+		6AFB18D72B2F0B3000967259 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB18D62B2F0B3000967259 /* NetworkService.swift */; };
+		6AFB18D92B2F0D5700967259 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB18D82B2F0D5700967259 /* AppConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,8 @@
 		6AE0B6B529F6B17000BA45C2 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		6AE0B6B729F831F800BA45C2 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
 		6AF4746D296711E500843E8A /* ProfileTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableHeaderView.swift; sourceTree = "<group>"; };
+		6AFB18D62B2F0B3000967259 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		6AFB18D82B2F0D5700967259 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +156,8 @@
 				6A05C517296402650064423C /* LaunchScreen.storyboard */,
 				6A05C51A296402650064423C /* Info.plist */,
 				6AE0B6B729F831F800BA45C2 /* FeedModel.swift */,
+				6AFB18D62B2F0B3000967259 /* NetworkService.swift */,
+				6AFB18D82B2F0D5700967259 /* AppConfiguration.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -317,6 +323,7 @@
 				6A0EC03B29801B7500CC21EB /* UITableViewExtension.swift in Sources */,
 				6A6F8F7C29C4DC4B006D0E8A /* MyLogInFactory.swift in Sources */,
 				6A05C50D296402640064423C /* AppDelegate.swift in Sources */,
+				6AFB18D92B2F0D5700967259 /* AppConfiguration.swift in Sources */,
 				6AF4746E296711E500843E8A /* ProfileTableHeaderView.swift in Sources */,
 				6A48F82C296470B200A12487 /* InfoViewController.swift in Sources */,
 				6A05C521296419E20064423C /* ProfileViewController.swift in Sources */,
@@ -332,6 +339,7 @@
 				6A6F8F7429C4A70D006D0E8A /* Checker.swift in Sources */,
 				6AE0B6B829F831F800BA45C2 /* FeedModel.swift in Sources */,
 				6A450F3F2970641B007090AE /* LogInViewController.swift in Sources */,
+				6AFB18D72B2F0B3000967259 /* NetworkService.swift in Sources */,
 				6A05C52329643ECB0064423C /* PostViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
