@@ -4,11 +4,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    var appConfiguration: AppConfiguration?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: scene)
+
+        appConfiguration = AppConfiguration.allCases.randomElement()
 
         let tabBarViewController = UITabBarController()
         let feedViewController = FeedViewController()
@@ -17,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let logInFactory = MyLogInFactory()
 
         loginViewController.loginDelegate = logInFactory.makeLogInInspector()
+        feedViewController.appCofiguration = appConfiguration
 
         let feedNavigationController = UINavigationController(rootViewController: feedViewController)
         let loginNavigationController = UINavigationController(rootViewController: loginViewController)

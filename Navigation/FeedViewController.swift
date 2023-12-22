@@ -6,6 +6,8 @@ class FeedViewController: UIViewController {
 
     private let feedModel = FeedModel()
 
+    var appCofiguration: AppConfiguration?
+
     private lazy var button1 = CustomButton(
         isUserInteractionEnabled: true,
         titleLabel: "First",
@@ -19,6 +21,14 @@ class FeedViewController: UIViewController {
         backgroundColor: .systemGreen,
         imageName: nil
     )
+
+    private lazy var buttonUrlSession: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("URLSession", for: .normal)
+        button.backgroundColor = .systemGreen
+        return button
+    }()
 
     private lazy var stackView: UIStackView = { [unowned self] in
         let stackView = UIStackView()
@@ -68,9 +78,11 @@ class FeedViewController: UIViewController {
         view.addSubview(textField)
         view.addSubview(checkGuessButton)
         view.addSubview(label)
+        view.addSubview(buttonUrlSession)
         setupProperties(for: button1)
         setupProperties(for: button2)
         setupProperties(for: checkGuessButton)
+        setupProperties(for: buttonUrlSession)
         setupConstraints()
         setupActions()
     }
@@ -102,6 +114,12 @@ class FeedViewController: UIViewController {
                 }
             }
         }
+
+        buttonUrlSession.addTarget(
+            self,
+            action: #selector(buttonUrlSessionPressed(_:)),
+            for: .touchUpInside
+        )
     }
 
     private func checkPassword(completition: @escaping ((Result<UIAlertController, PasswordError>)) -> Void) {
@@ -203,7 +221,12 @@ class FeedViewController: UIViewController {
             ),
             label.rightAnchor.constraint(equalTo: stackView.rightAnchor),
             label.centerYAnchor.constraint(equalTo: checkGuessButton.centerYAnchor),
-            label.heightAnchor.constraint(equalToConstant: 40)
+            label.heightAnchor.constraint(equalToConstant: 40),
+
+            buttonUrlSession.leftAnchor.constraint(equalTo: checkGuessButton.leftAnchor),
+            buttonUrlSession.rightAnchor.constraint(equalTo: checkGuessButton.rightAnchor),
+            buttonUrlSession.topAnchor.constraint(equalTo: checkGuessButton.bottomAnchor, constant: 16),
+            buttonUrlSession.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
 
@@ -212,6 +235,11 @@ class FeedViewController: UIViewController {
         button.layer.cornerRadius = 3
         button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.systemBlue.cgColor
+    }
+
+    @objc func buttonUrlSessionPressed(_ sender: UIButton) {
+        guard let appCofiguration else { return }
+        NetworkService.request(for: appCofiguration)
     }
 }
 
